@@ -53,4 +53,12 @@ class CitiesScreenViewModel @Inject constructor() : ViewModel() {
             _citiesScreenUiState.value = CitiesScreenUiState.Success(CitiesScreenState(cities , cities, ""))
         }
     }
+
+    fun filterChange(value: String) {
+        Log.e("Sebas", "Filter changed to: $value")
+        var oldValue = _citiesScreenUiState.value as CitiesScreenUiState.Success
+        val citiesFiltered = oldValue.data.cities.filter { it.name.contains(value, ignoreCase = true) }
+        val newValue = CitiesScreenUiState.Success(CitiesScreenState(oldValue.data.cities , citiesFiltered, value))
+        _citiesScreenUiState.value = newValue
+    }
 }
