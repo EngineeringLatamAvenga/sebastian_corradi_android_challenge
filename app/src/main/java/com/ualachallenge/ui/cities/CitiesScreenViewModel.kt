@@ -19,15 +19,17 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class CitiesScreenViewModel @Inject constructor() : ViewModel() {
+class CitiesScreenViewModel @Inject constructor(var getCitiesUseCase: GetCitiesUseCase) : ViewModel() {
     private val _citiesScreenUiState = MutableStateFlow<CitiesScreenUiState>(CitiesScreenUiState.Init())
     val citiesScreenUiState: StateFlow<CitiesScreenUiState> get() = _citiesScreenUiState // Expose as an immutable flow
 
     private val _singleEventCity = Channel<City>(Channel.BUFFERED)
     val singleEventCity = _singleEventCity.receiveAsFlow()// Expose as read-only
 
-    @Inject
-    lateinit var getCitiesUseCase: GetCitiesUseCase
+    private val cities: MutableList<City> = mutableListOf()
+
+    //@Inject
+    //lateinit var getCitiesUseCase: GetCitiesUseCase
 
     /*var getCitiesUseCase = GetCitiesUseCase(
         CitiesRepository(
@@ -40,6 +42,10 @@ class CitiesScreenViewModel @Inject constructor() : ViewModel() {
         // This block is executed only once when the ViewModel is created
         //loadCities()
     }*/
+
+    init {
+        citiesRequested()
+    }
     fun cityClicked(city: City){
         CoroutineScope(Dispatchers.Main).launch {
             _singleEventCity.send(city)
@@ -48,17 +54,27 @@ class CitiesScreenViewModel @Inject constructor() : ViewModel() {
     fun citiesRequested(){
         viewModelScope.launch {
             val citiesResponse = getCitiesUseCase.getCities()
-            Log.e("Sebas", "zzzzzzzz<<<<zzzzzzzz.  response: ${citiesResponse}")
-            val cities = (citiesResponse as CitiesScreenUiState.Success).data.cities
-            _citiesScreenUiState.value = CitiesScreenUiState.Success(CitiesScreenState(cities , cities, ""))
+            cities.clear()
+            cities.addAll((citiesResponse as CitiesScreenUiState.Success).data.citiesFiltered)
+            _citiesScreenUiState.value = CitiesScreenUiState.Success(CitiesScreenState(cities , ""))
         }
     }
 
     fun filterChange(value: String) {
         Log.e("Sebas", "Filter changed to: $value")
         var oldValue = _citiesScreenUiState.value as CitiesScreenUiState.Success
-        val citiesFiltered = oldValue.data.cities.filter { it.name.contains(value, ignoreCase = true) }
-        val newValue = CitiesScreenUiState.Success(CitiesScreenState(oldValue.data.cities , citiesFiltered, value))
+        val citiesFiltered = cities.filter { it.name.contains(value, ignoreCase = true) }
+        val newValue = CitiesScreenUiState.Success(CitiesScreenState(citiesFiltered, value))
         _citiesScreenUiState.value = newValue
+    }
+
+    fun favoriteClicked(id: Int, clicked: Boolean) {
+        var cityIndex = cities.indexOfFirst { it.id == id }
+        cities.get(cityIndex).favourite = clicked
+        val filter = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.nameFilter
+        val newCities = cities.filter { it.name.contains(filter, ignoreCase = true) }
+        val newValue = CitiesScreenUiState.Success(CitiesScreenState(newCities, filter))
+        _citiesScreenUiState.value = newValue
+        Log.e("Sebas", "Fav clicked, id: $id, chnged to: $clicked")
     }
 }

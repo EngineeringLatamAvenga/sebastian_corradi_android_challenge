@@ -19,7 +19,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.ualachallenge.data.City
 
 @Composable
-fun MapScreen(city: City, back: () -> Unit) {
+fun MapScreen(
+    modifier: Modifier = Modifier,
+    city: City,
+    back: () -> Unit) {
     val cityCoord = LatLng(city.coord.lat, city.coord.lon)
     val pinLocation = LatLng(city.coord.lat, city.coord.lon)
     val cameraPositionState = rememberCameraPositionState {
@@ -27,8 +30,7 @@ fun MapScreen(city: City, back: () -> Unit) {
         //position = com.google.android.gms.maps.CameraPosition.fromLatLngZoom(singapore, 10f)
     }
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
     ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -46,7 +48,6 @@ fun MapScreen(city: City, back: () -> Unit) {
             Spacer(Modifier.weight(1F))
             Button(
                 onClick = {
-                    Log.e("Sebas", "back click")
                     back()
                 })
             {

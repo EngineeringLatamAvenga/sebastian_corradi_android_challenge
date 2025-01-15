@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ualachallenge.data.City
 import com.ualachallenge.data.Coord
 import com.ualachallenge.ui.cities.CitiesScreenUiState.Init
@@ -24,8 +25,9 @@ import com.ualachallenge.ui.map.MapScreen
 
 @Composable
 fun CitiesScreen(
-    viewModel: CitiesScreenViewModel = CitiesScreenViewModel()
-    ,navigateToMap: (city: City) -> Unit
+    modifier: Modifier = Modifier,
+    viewModel: CitiesScreenViewModel = hiltViewModel(),
+    navigateToMap: (city: City) -> Unit
 ) {
     val state = viewModel.citiesScreenUiState.collectAsState()
     var currentCity by remember { mutableStateOf<City?>(null) }
@@ -41,22 +43,24 @@ fun CitiesScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         viewModel.citiesRequested()
-    }
+    }*/
     when (state.value){
         is CitiesScreenUiState.Success -> {
-            Column(modifier = Modifier.fillMaxWidth().fillMaxWidth()) {
+            Column(modifier = modifier) {
                 SearchView(
                     viewModel = viewModel,
                     filter = (state.value as CitiesScreenUiState.Success).data.nameFilter
                 )
-                DynamicLazyColumn((state.value as CitiesScreenUiState.Success).data.citiesFiltered) { cityClicked ->
-                    viewModel.cityClicked(cityClicked)
-                }
-                currentCity?.let{ city ->
+                DynamicLazyColumn((state.value as CitiesScreenUiState.Success).data.citiesFiltered,
+                    {cityClicked -> viewModel.cityClicked(cityClicked)},
+                    {id, clicked -> viewModel.favoriteClicked(id, clicked)}
+
+                )
+                /*currentCity?.let{ city ->
                     navigateToMap(city)
-                }
+                }*/
             }
         }
         is CitiesScreenUiState.Error -> {
@@ -68,10 +72,12 @@ fun CitiesScreen(
 }
 
 @Composable
-fun DynamicLazyColumn(items: List<City>, onCityClick: (city: City) -> Unit) {
+fun DynamicLazyColumn(items: List<City>,
+                      onCityClick: (city: City) -> Unit,
+                      onItemFavoriteClicked: (id: Int, clicked: Boolean) -> Unit) {
     LazyColumn {
         items(items.size) { cityIndex ->
-            CityItem(items[cityIndex], onCityClick = onCityClick)
+            CityItem(items[cityIndex], onCityClick = onCityClick, onItemFavoriteClicked = onItemFavoriteClicked)
         }
     }
 }
@@ -112,7 +118,7 @@ fun CitiesScreenPreview(){
             country = "AR", name = "San telmo", id = 330767, coord = Coord(33.672234, 76.775435)
         )
     )
-    SearchView(viewModel = CitiesScreenViewModel(), filter = "au" )
-    DynamicLazyColumn(cities){}
+    SearchView(viewModel = hiltViewModel(), filter = "au" )
+    DynamicLazyColumn(cities,{},{id, clicked ->})
 }
 

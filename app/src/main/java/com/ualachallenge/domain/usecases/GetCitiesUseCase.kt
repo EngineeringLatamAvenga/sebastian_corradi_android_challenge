@@ -21,7 +21,6 @@ class GetCitiesUseCase @Inject constructor(
             //var response = CitiesScreenUiState.Init<Int>()
             //var response = CitiesScreenUiState.Success(data = citiesResponse.cities)
             var response = CitiesScreenUiState.Success(data = CitiesScreenState(
-                cities = citiesResponse.cities,
                 citiesFiltered = citiesResponse.cities,
                 nameFilter = ""
             ))

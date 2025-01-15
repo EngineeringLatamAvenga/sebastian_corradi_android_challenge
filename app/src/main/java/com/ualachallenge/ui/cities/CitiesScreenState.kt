@@ -5,7 +5,6 @@ import com.ualachallenge.data.City
 import kotlinx.parcelize.Parcelize
 
 class CitiesScreenState(
-    val cities: List<City>,
     val citiesFiltered: List<City>,
     val nameFilter: String
 )

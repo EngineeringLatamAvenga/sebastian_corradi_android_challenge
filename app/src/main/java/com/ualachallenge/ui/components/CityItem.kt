@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,12 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ualachallenge.R
 import com.ualachallenge.data.City
 import com.ualachallenge.data.Coord
+import com.ualachallenge.ui.cities.CitiesScreenViewModel
 
 @Composable
-fun CityItem(city: City, onCityClick: (city: City) -> Unit,) {
+fun CityItem(city: City, onCityClick: (city: City) -> Unit, onItemFavoriteClicked: (itemId: Int, selected: Boolean) -> Unit) {
     Column(modifier = Modifier
         .background(color = colorResource(id = R.color.cities_detail_background))
         .clickable {
@@ -65,12 +68,11 @@ fun CityItem(city: City, onCityClick: (city: City) -> Unit,) {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.weight(1F))
-            Text(
-                modifier = Modifier
-                    .padding(vertical = 2.dp)
-                    .padding(horizontal = 12.dp),
-                text = "toogle favorite",
-                color = MaterialTheme.colorScheme.primary
+            Switch(
+                checked = city.favourite,
+                onCheckedChange = {
+                    onItemFavoriteClicked(city.id, !city.favourite)
+                }
             )
         }
     }
@@ -85,7 +87,7 @@ fun cityItemPreviewDay() {
     val city = City(
         country = "AR", name = "Palermo", id = 330765, coord = Coord(33.652234, 76.555435)
     )
-    CityItem(city){}
+    CityItem(city, {},  {id: Int, clicked: Boolean -> })
 }
 
 @Preview(
@@ -97,5 +99,5 @@ fun cityItemPreviewNight() {
     val city = City(
         country = "AR", name = "Palermo", id = 330765, coord = Coord(33.652234, 76.555435)
     )
-    CityItem(city){}
+    CityItem(city,{},{id: Int, clicked: Boolean -> })
 }

@@ -7,7 +7,7 @@ data class City(
     val name: String,
     val id: Int,
     val coord:Coord,
-    val favourite: Boolean = false
+    var favourite: Boolean = false
 ) {
 }
 
