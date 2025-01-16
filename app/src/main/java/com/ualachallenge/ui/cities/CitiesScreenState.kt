@@ -4,9 +4,10 @@ import android.os.Parcelable
 import com.ualachallenge.data.City
 import kotlinx.parcelize.Parcelize
 
-class CitiesScreenState(
+data class CitiesScreenState(
     val citiesFiltered: List<City>,
-    val nameFilter: String
+    val nameFilter: String,
+    val justFavouritesChecked: Boolean
 )
 
 

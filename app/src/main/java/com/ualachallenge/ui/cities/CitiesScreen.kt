@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,7 +63,8 @@ fun CitiesScreen(
             Column(modifier = modifier) {
                 SearchView(
                     viewModel = viewModel,
-                    filter = (state.value as CitiesScreenUiState.Success).data.nameFilter
+                    filter = (state.value as CitiesScreenUiState.Success).data.nameFilter,
+                    favouritesChecked = (state.value as CitiesScreenUiState.Success).data.justFavouritesChecked,
                 )
                 DynamicLazyColumn((state.value as CitiesScreenUiState.Success).data.citiesFiltered,
                     {cityClicked -> viewModel.cityClicked(cityClicked)},
@@ -96,7 +98,8 @@ fun DynamicLazyColumn(items: List<City>,
 @Composable
 fun SearchView(
     viewModel: CitiesScreenViewModel,
-    filter: String
+    filter: String,
+    favouritesChecked: Boolean
 ) {
     Row( modifier = Modifier
         .wrapContentHeight()
@@ -111,6 +114,12 @@ fun SearchView(
             value = filter,
             onValueChange = { value ->
                 viewModel.filterChange(value)
+            }
+        )
+        Switch(
+            checked = favouritesChecked,
+            onCheckedChange = {
+                viewModel.searchJustFavouritesChecked(!favouritesChecked)
             }
         )
         IconButton(
@@ -153,7 +162,7 @@ fun CitiesScreenPreview(){
             country = "AR", name = "San telmo", id = 330767, coord = Coord(33.672234, 76.775435)
         )
     )
-    SearchView(viewModel = hiltViewModel(), filter = "au" )
+    SearchView(viewModel = hiltViewModel(), filter = "au", false)
     DynamicLazyColumn(cities,{},{id, clicked ->})
 }
 

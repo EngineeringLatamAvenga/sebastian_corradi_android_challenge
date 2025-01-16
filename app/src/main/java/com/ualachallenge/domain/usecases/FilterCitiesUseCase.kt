@@ -1,11 +1,8 @@
 package com.ualachallenge.domain.usecases
 
 import com.ualachallenge.data.City
-import com.ualachallenge.repository.CitiesRepository
-import com.ualachallenge.repository.data.CitiesResponse
 import com.ualachallenge.ui.cities.CitiesScreenState
 import com.ualachallenge.ui.cities.CitiesScreenUiState
-import com.ualachallenge.ui.cities.ResponseErrorModel
 import javax.inject.Inject
 
 class FilterCitiesUseCase  @Inject constructor() {
@@ -13,11 +10,13 @@ class FilterCitiesUseCase  @Inject constructor() {
         return listToBeFiltered.filter { it.name.startsWith(filter) }
     }*/
 
-    open operator  fun invoke(listToBeFiltered: List<City>, filter:String): CitiesScreenUiState {
-        val citiesFiltered = listToBeFiltered.filter { it.name.startsWith(filter, ignoreCase = true) }
+    open operator  fun invoke(listToBeFiltered: List<City>, filter:String, favouritesChecked: Boolean): CitiesScreenUiState {
+        val citiesFiltered = listToBeFiltered.filter { it.name.startsWith(filter, ignoreCase = true) }.filter { it.favourite == favouritesChecked }
+
         var response = CitiesScreenUiState.Success(data = CitiesScreenState(
             citiesFiltered = citiesFiltered,
-            nameFilter = filter
+            nameFilter = filter,
+            justFavouritesChecked = favouritesChecked
         ))
         return response
     }

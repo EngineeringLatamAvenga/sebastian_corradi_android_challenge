@@ -2,7 +2,6 @@ package com.ualachallenge.ui.cities
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ualachallenge.data.City
 import com.ualachallenge.domain.usecases.FilterCitiesUseCase
 import com.ualachallenge.domain.usecases.GetCitiesUseCase
@@ -30,7 +29,7 @@ class CitiesScreenViewModel @Inject constructor(
     private val _singleEventCity = Channel<City>(Channel.BUFFERED)
     val singleEventCity = _singleEventCity.receiveAsFlow()// Expose as read-only
 
-    private val cities: MutableList<City> = mutableListOf()
+    private var cities: MutableList<City> = mutableListOf()
 
     @Inject
     lateinit var handleFavoriteUseCase: HandleFavouriteUseCase
@@ -56,13 +55,14 @@ class CitiesScreenViewModel @Inject constructor(
             val citiesResponse = getCitiesUseCase()
             cities.clear()
             cities.addAll((citiesResponse as CitiesScreenUiState.Success).data.citiesFiltered)
-            _citiesScreenUiState.value = CitiesScreenUiState.Success(CitiesScreenState(cities , ""))
+            _citiesScreenUiState.value = CitiesScreenUiState.Success(CitiesScreenState(cities , "", false))
         }
     }
 
     fun filterChange(value: String) {
         Log.e("Sebas", "Filter changed to: $value")
-        val newCitiesScreenUIState = filterCitiesUseCase.invoke(cities, value)
+        val checked = ( _citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
+        val newCitiesScreenUIState = filterCitiesUseCase.invoke(cities, value, checked)
         _citiesScreenUiState.value = newCitiesScreenUIState
     }
 
@@ -71,16 +71,25 @@ class CitiesScreenViewModel @Inject constructor(
         cities.get(cityIndex).favourite = clicked
         CoroutineScope(Dispatchers.IO).launch {
             handleFavoriteUseCase(cities[cityIndex])
+            Log.e("Sebas", "Fav clicked, id: $id, chnged to: $clicked")
         }
         val filter = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.nameFilter
-        val newCities = cities.filter { it.name.contains(filter, ignoreCase = true) }
-        val newValue = CitiesScreenUiState.Success(CitiesScreenState(newCities, filter))
-        _citiesScreenUiState.value = newValue
+        val justFavorites = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
+        val newCities = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.citiesFiltered
 
-        Log.e("Sebas", "Fav clicked, id: $id, chnged to: $clicked")
-        CoroutineScope(Dispatchers.IO).launch {
-            val favorites = getFavoriteUseCase()
-            Log.e("Sebas", "Fav orites: $favorites")
-        }
+        val newValue = CitiesScreenUiState.Success(
+            CitiesScreenState(
+                newCities.subList(0, newCities.lastIndex),
+                filter,
+                justFavorites
+            )
+        )
+        _citiesScreenUiState.value = newValue
+    }
+
+    fun searchJustFavouritesChecked(checked: Boolean) {
+        val filter = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.nameFilter
+        val citiesFiltered = filterCitiesUseCase(cities, filter, checked)
+        _citiesScreenUiState.value = citiesFiltered
     }
 }

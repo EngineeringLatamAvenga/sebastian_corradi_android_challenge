@@ -10,16 +10,13 @@ import javax.inject.Inject
 class GetCitiesUseCase @Inject constructor(
     protected val citiesRepository: CitiesRepository,
 ) {
-   /* open suspend operator  fun invoke(): CitiesResponse {
-        val response = citiesRepository.getCities()
-        return response
-    }*/
     public suspend operator  fun invoke(): CitiesScreenUiState {
         val citiesResponse = citiesRepository.getCities()
         if (citiesResponse.success) {
             var response = CitiesScreenUiState.Success(data = CitiesScreenState(
                 citiesFiltered = citiesResponse.cities.sortedWith(compareBy({it.name}, {it.country})),
-                nameFilter = ""
+                nameFilter = "",
+                false
             ))
             return response
         } else {
