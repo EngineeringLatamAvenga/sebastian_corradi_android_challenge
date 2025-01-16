@@ -5,6 +5,8 @@ import com.ualachallenge.data.City
 import com.ualachallenge.domain.toCity
 import com.ualachallenge.repository.api.ApiClient
 import com.ualachallenge.repository.data.CitiesResponse
+import com.ualachallenge.repository.datasources.LocalCitiesDataSource
+import com.ualachallenge.repository.datasources.RemoteCitiesDataSource
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 
@@ -12,25 +14,26 @@ open class CitiesRepository(val localCitiesDataSource: LocalCitiesDataSource,
                             val remoteCitiesDataSource: RemoteCitiesDataSource
 ) {
    suspend fun getCities(): CitiesResponse {
-        try {
-            val citiesDTO = ApiClient.apiService.getCities()
-            citiesDTO?.let {
-                return CitiesResponse(success = true, cities = citiesDTO.map { it.toCity() })
-            }?: run {
-                return CitiesResponse(success = false, errorResId = R.string.no_cities_available)
-            }
-        } catch (e: HttpException) {
-            return CitiesResponse(errorCode = e.code(),
-                errorMessage = e.message,
-                errorResId = R.string.error_on_server_call,
-                success = false)
-        } catch (e: SocketTimeoutException) {
-            return CitiesResponse(
-                errorCode = 400,
-                errorMessage = e.message,
-                errorResId = R.string.error_timeout,
-                success = false
-            )
-        }
+        val response = remoteCitiesDataSource.getCities()
+       val favourites = localCitiesDataSource.getFavourites()
+       for (city in favourites){
+           val  responseCity = response.cities.filter { it.id == city.id }.firstOrNull()
+           responseCity?.let {
+               it.favourite = city.favourite
+           }
+       }
+        return response
+    }
+
+    suspend fun getFavourites():List<City>{
+        return localCitiesDataSource.getFavourites()
+    }
+
+    suspend fun saveFavourite(city: City){
+        return localCitiesDataSource.saveFavourite(city)
+    }
+
+    suspend fun deleteFavourite(city: City){
+        localCitiesDataSource.deleteFavourite(city)
     }
 }

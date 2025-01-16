@@ -67,6 +67,7 @@ dependencies {
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.room.common)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -74,6 +75,15 @@ dependencies {
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     //implementation ("com.google.maps.android:maps-compose:4.4.1")
+
+    //ROOM
+    implementation(libs.androidx.room.runtime)
+    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
+    // See Add the KSP plugin to your project
+    kapt(libs.androidx.room.compiler)
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation(libs.androidx.room.ktx)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
