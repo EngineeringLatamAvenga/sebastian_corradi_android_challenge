@@ -4,22 +4,24 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ualachallenge.data.City
+import com.ualachallenge.domain.usecases.FilterCitiesUseCase
 import com.ualachallenge.domain.usecases.GetCitiesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class CitiesScreenViewModel @Inject constructor(var getCitiesUseCase: GetCitiesUseCase) : ViewModel() {
+class CitiesScreenViewModel @Inject constructor(
+        var getCitiesUseCase: GetCitiesUseCase,
+        var filterCitiesUseCase: FilterCitiesUseCase) : ViewModel() {
     private val _citiesScreenUiState = MutableStateFlow<CitiesScreenUiState>(CitiesScreenUiState.Init())
     val citiesScreenUiState: StateFlow<CitiesScreenUiState> get() = _citiesScreenUiState // Expose as an immutable flow
 
@@ -28,20 +30,8 @@ class CitiesScreenViewModel @Inject constructor(var getCitiesUseCase: GetCitiesU
 
     private val cities: MutableList<City> = mutableListOf()
 
-    //@Inject
-    //lateinit var getCitiesUseCase: GetCitiesUseCase
-
-    /*var getCitiesUseCase = GetCitiesUseCase(
-        CitiesRepository(
-            localCitiesDataSource = LocalCitiesDataSource(),
-            remoteCitiesDataSource = RemoteCitiesDataSource()
-        )
-    )*/
-
-    /*init {
-        // This block is executed only once when the ViewModel is created
-        //loadCities()
-    }*/
+    private val _currentCityClicked = MutableStateFlow<City?>(null)
+    val currentCityClicked: StateFlow<City?> get() = _currentCityClicked // Expose as an immutable flow
 
     init {
         citiesRequested()
@@ -50,6 +40,7 @@ class CitiesScreenViewModel @Inject constructor(var getCitiesUseCase: GetCitiesU
         CoroutineScope(Dispatchers.Main).launch {
             _singleEventCity.send(city)
         }
+        _currentCityClicked.update { city }
     }
     fun citiesRequested(){
         viewModelScope.launch {
@@ -62,10 +53,8 @@ class CitiesScreenViewModel @Inject constructor(var getCitiesUseCase: GetCitiesU
 
     fun filterChange(value: String) {
         Log.e("Sebas", "Filter changed to: $value")
-        var oldValue = _citiesScreenUiState.value as CitiesScreenUiState.Success
-        val citiesFiltered = cities.filter { it.name.contains(value, ignoreCase = true) }
-        val newValue = CitiesScreenUiState.Success(CitiesScreenState(citiesFiltered, value))
-        _citiesScreenUiState.value = newValue
+        val newCitiesScreenUIState = filterCitiesUseCase.invoke(cities, value)
+        _citiesScreenUiState.value = newCitiesScreenUIState
     }
 
     fun favoriteClicked(id: Int, clicked: Boolean) {

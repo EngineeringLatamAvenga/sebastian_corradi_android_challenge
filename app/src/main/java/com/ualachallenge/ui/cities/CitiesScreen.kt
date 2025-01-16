@@ -2,9 +2,18 @@ package com.ualachallenge.ui.cities
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,12 +25,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ualachallenge.data.City
 import com.ualachallenge.data.Coord
 import com.ualachallenge.ui.cities.CitiesScreenUiState.Init
 import com.ualachallenge.ui.components.CityItem
-import com.ualachallenge.ui.map.MapScreen
 
 @Composable
 fun CitiesScreen(
@@ -34,6 +43,8 @@ fun CitiesScreen(
     currentCity?.let{ city ->
         navigateToMap(city)
     }
+    Log.e("Sebas", "--------------init del cityScreen... viewModel: $viewModel")
+
     LaunchedEffect(Unit) {
         viewModel.singleEventCity.collect { city ->
             // Handle the event
@@ -84,15 +95,39 @@ fun DynamicLazyColumn(items: List<City>,
 
 @Composable
 fun SearchView(
-    modifier: Modifier = Modifier,
     viewModel: CitiesScreenViewModel,
     filter: String
 ) {
-    TextField(
-        value = filter,
-        onValueChange = { value ->
-            viewModel.filterChange(value)}
+    Row( modifier = Modifier
+        .wrapContentHeight()
+        .fillMaxWidth()
+        .padding(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)){
+
+        TextField(
+            modifier = Modifier
+                .weight(1F)
+                .wrapContentHeight(),
+            value = filter,
+            onValueChange = { value ->
+                viewModel.filterChange(value)
+            }
+        )
+        IconButton(
+            onClick = {
+                viewModel.filterChange("")
+            },
+            modifier = Modifier
+                .padding(start = 2.dp, top = 8.dp)
+                .wrapContentSize()
+                 // Align to top-left corner
+        ) {
+            Icon(
+                Icons.Rounded.Close,
+                contentDescription = "hola"
             )
+        }
+    }
 }
 
 

@@ -10,8 +10,8 @@ object RetrofitClient {
     private const val BASE_URL = "https://gist.githubusercontent.com/"
 
     val intercepter = HttpLoggingInterceptor().apply {
-        this.level = HttpLoggingInterceptor.Level.BODY
-        //this.level = HttpLoggingInterceptor.Level.HEADERS
+        //this.level = HttpLoggingInterceptor.Level.BODY
+        this.level = HttpLoggingInterceptor.Level.HEADERS
     }
     val client = OkHttpClient.Builder().apply {
         this.addInterceptor(intercepter)

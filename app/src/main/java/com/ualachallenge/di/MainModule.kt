@@ -1,5 +1,6 @@
 package com.ualachallenge.di
 
+import com.ualachallenge.domain.usecases.FilterCitiesUseCase
 import com.ualachallenge.repository.CitiesRepository
 import com.ualachallenge.repository.LocalCitiesDataSource
 import com.ualachallenge.repository.RemoteCitiesDataSource
@@ -27,6 +28,10 @@ object MainModule {
     @Provides
     fun provideGetCitiesUseCase(citiesRepository: CitiesRepository): GetCitiesUseCase =
         GetCitiesUseCase(citiesRepository)
+
+    @Provides
+    fun provideFilterCitiesUseCase(): FilterCitiesUseCase =
+        FilterCitiesUseCase()
 
 }
 

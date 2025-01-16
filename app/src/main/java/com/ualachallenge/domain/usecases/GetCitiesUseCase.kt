@@ -17,11 +17,8 @@ class GetCitiesUseCase @Inject constructor(
     public suspend fun getCities(): CitiesScreenUiState {
         val citiesResponse = citiesRepository.getCities()
         if (citiesResponse.success) {
-            //var response = CitiesScreenUiState<CitiesScreenState>()
-            //var response = CitiesScreenUiState.Init<Int>()
-            //var response = CitiesScreenUiState.Success(data = citiesResponse.cities)
             var response = CitiesScreenUiState.Success(data = CitiesScreenState(
-                citiesFiltered = citiesResponse.cities,
+                citiesFiltered = citiesResponse.cities.sortedWith(compareBy({it.name}, {it.country})),
                 nameFilter = ""
             ))
             return response
@@ -31,4 +28,3 @@ class GetCitiesUseCase @Inject constructor(
         }
     }
 }
-//CitiesScreenUiState<T>

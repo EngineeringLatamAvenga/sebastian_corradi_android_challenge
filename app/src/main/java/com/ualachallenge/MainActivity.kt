@@ -67,6 +67,7 @@ fun MainScreen() {
             )
             MapScreen(
                 modifier = Modifier.fillMaxWidth(),
+                viewModel = hiltViewModel<CitiesScreenViewModel>(),
                 City("Ar", "Palermo", 23, Coord(-58.6444535, -28.44455342))
             ){Log.e("Sebas", "no hace nada el volver")}
         }
@@ -80,11 +81,15 @@ fun MainScreen() {
                 viewModel = hiltViewModel<CitiesScreenViewModel>(),
                 navigateToMap = { selectedCity -> currentCity = selectedCity
                     currentScreen = Screen.MapScreen})
-            Screen.MapScreen -> currentCity?.let { city -> MapScreen(modifier,
-                                                                    city){
-                Log.e("Sebas2", "desde mainActivity")
-                currentScreen = Screen.CityScreen
-            } }
+            Screen.MapScreen -> currentCity?.let {
+                city -> MapScreen(
+                    modifier,
+                    viewModel = hiltViewModel<CitiesScreenViewModel>(),
+                    city) {
+                        Log.e("Sebas2", "desde mainActivity")
+                        currentScreen = Screen.CityScreen
+                    }
+            }
         }
     }
     /*when (currentScreen) {
