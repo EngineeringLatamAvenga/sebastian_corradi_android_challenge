@@ -26,6 +26,8 @@ No había restricciones ni lineamientos sobre la UI así que no incurrí en tiem
 Para agilizar el filtrado se guarda una copia de la lista de ciudades dentro del viewmodel, entiendo que la cantidad de ciudades es demasiado extensa y esto podría traer problemas de performance y del uso de memoria, pero es una alternativa y no había restricciones al respecto.
 El mapa se muestra vacío hasta que el usuario haga click en alguna ciudad, pero muestra un mensaje amigable.
 
+La clave MAPS_API_KEY esta guardada en el archivo local.properties, y no deberia subirse al repo, pero en este caso se sube igual
+
 
 # Notas
 La resolución me tomo alrededor de 20 horas, repartidas en 8 días aproximadamente.

@@ -15,9 +15,13 @@
         android:theme="@style/Theme.Ualachallenge"
         tools:targetApi="31">
         <uses-library android:name="android.test.runner" android:required="false"/>
+        <!-- <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDcoJLWqLSk-bPEVilTZw-Ekc8tZtlXLnw" /> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDcoJLWqLSk-bPEVilTZw-Ekc8tZtlXLnw" />
+            android:value="${MAPS_API_KEY}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
