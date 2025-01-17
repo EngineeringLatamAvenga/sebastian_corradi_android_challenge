@@ -12,9 +12,12 @@ class FilterCitiesUseCase @Inject constructor() {
         filter: String,
         favouritesChecked: Boolean
     ): CitiesScreenUiState {
-        val citiesFiltered =
+        val citiesFiltered = if (favouritesChecked) {
             listToBeFiltered.filter { it.name.startsWith(filter, ignoreCase = true) }
                 .filter { it.favourite == favouritesChecked }
+        } else {
+            listToBeFiltered.filter { it.name.startsWith(filter, ignoreCase = true) }
+        }
 
         var response = CitiesScreenUiState.Success(
             data = CitiesScreenState(

@@ -65,7 +65,6 @@ class CitiesScreenViewModel @Inject constructor(
     }
 
     fun filterChange(value: String) {
-        Log.e("Sebas", "Filter changed to: $value")
         val checked =
             (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
         val newCitiesScreenUIState = filterCitiesUseCase.invoke(cities, value, checked)
@@ -77,7 +76,6 @@ class CitiesScreenViewModel @Inject constructor(
         cities.get(cityIndex).favourite = clicked
         CoroutineScope(Dispatchers.IO).launch {
             handleFavoriteUseCase(cities[cityIndex])
-            Log.e("Sebas", "Fav clicked, id: $id, chnged to: $clicked")
         }
         val filter = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.nameFilter
         val justFavorites =

@@ -23,6 +23,7 @@ import com.ualachallenge.data.City
 import com.ualachallenge.data.Coord
 import com.ualachallenge.ui.cities.CitiesScreen
 import com.ualachallenge.ui.cities.CitiesScreenViewModel
+import com.ualachallenge.ui.info.InfoScreen
 import com.ualachallenge.ui.map.MapScreen
 import com.ualachallenge.ui.theme.UalaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +46,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-//fun HomeScreen(onNavigate: () -> Unit) {
 fun MainScreen() {
     var currentScreen:Screen by remember { mutableStateOf(Screen.CityScreen) }
     var currentCity:City? by remember { mutableStateOf(null) }
@@ -54,25 +54,30 @@ fun MainScreen() {
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     var modifier:Modifier = Modifier
     if (isLandscape) {
-        Log.e("Sebas", "LANDSCAPE --- LANDSCAPE --- LANDSCAPE")
         // Landscape layout: Show list and map side-by-side
         modifier = Modifier.fillMaxWidth(0.5F)
-        Row(modifier = Modifier.fillMaxWidth()) {
-            CitiesScreen(
-                modifier = modifier,
-                viewModel = hiltViewModel<CitiesScreenViewModel>(),
-                navigateToMap = {
-                    Log.e("Sebas", "no hace nada el click")
+        when (currentScreen) {
+            Screen.Info -> InfoScreen() {
+                currentScreen = Screen.CityScreen
+            }
+
+            else -> {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    CitiesScreen(
+                        modifier = modifier,
+                        viewModel = hiltViewModel<CitiesScreenViewModel>(),
+                        navigateToMap = {},
+                        navigateToInfo = {currentScreen = Screen.Info}
+                    )
+                    MapScreen(
+                        modifier = Modifier.fillMaxWidth(),
+                        viewModel = hiltViewModel<CitiesScreenViewModel>(),
+                        City("Ar", "Palermo", 23, Coord(-58.6444535, -28.44455342))
+                    ) {}
                 }
-            )
-            MapScreen(
-                modifier = Modifier.fillMaxWidth(),
-                viewModel = hiltViewModel<CitiesScreenViewModel>(),
-                City("Ar", "Palermo", 23, Coord(-58.6444535, -28.44455342))
-            ){Log.e("Sebas", "no hace nada el volver")}
+            }
         }
     } else {
-        Log.e("Sebas", "PORTRAIT --- PORTRAIT --- PORTRAIT")
         modifier = Modifier.fillMaxWidth()
         // Portrait layout: Show only one screen at a time
         when (currentScreen) {
@@ -80,40 +85,25 @@ fun MainScreen() {
                 modifier = modifier,
                 viewModel = hiltViewModel<CitiesScreenViewModel>(),
                 navigateToMap = { selectedCity -> currentCity = selectedCity
-                    currentScreen = Screen.MapScreen})
+                    currentScreen = Screen.MapScreen},
+                navigateToInfo = {currentScreen = Screen.Info})
             Screen.MapScreen -> currentCity?.let {
                 city -> MapScreen(
                     modifier,
                     viewModel = hiltViewModel<CitiesScreenViewModel>(),
                     city) {
-                        Log.e("Sebas2", "desde mainActivity")
                         currentScreen = Screen.CityScreen
                     }
             }
+            Screen.Info -> InfoScreen(){
+                currentScreen = Screen.CityScreen
+            }
         }
-    }
-    /*when (currentScreen) {
-        Screen.CityScreen -> CitiesScreen(
-            modifier = modifier,
-            viewModel = hiltViewModel<CitiesScreenViewModel>(),
-            navigateToMap = { selectedCity -> currentCity = selectedCity
-                                              currentScreen = Screen.MapScreen})
-        Screen.MapScreen -> currentCity?.let { city -> MapScreen(modifier, city){
-            Log.e("Sebas2", "desde mainActivity")
-            currentScreen = Screen.CityScreen
-        } }
-    }*/
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    UalaTheme {
-        CitiesScreen(navigateToMap = {})
     }
 }
 
 sealed class Screen {
     object CityScreen : Screen()
     object MapScreen : Screen()
+    object Info : Screen()
 }

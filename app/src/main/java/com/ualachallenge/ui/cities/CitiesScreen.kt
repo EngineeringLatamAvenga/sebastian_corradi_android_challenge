@@ -37,14 +37,14 @@ import com.ualachallenge.ui.components.CityItem
 fun CitiesScreen(
     modifier: Modifier = Modifier,
     viewModel: CitiesScreenViewModel = hiltViewModel(),
-    navigateToMap: (city: City) -> Unit
+    navigateToMap: (city: City) -> Unit,
+    navigateToInfo: () -> Unit
 ) {
     val state = viewModel.citiesScreenUiState.collectAsState()
     var currentCity by remember { mutableStateOf<City?>(null) }
     currentCity?.let { city ->
         navigateToMap(city)
     }
-    Log.e("Sebas", "--------------init del cityScreen... viewModel: $viewModel")
 
     LaunchedEffect(Unit) {
         viewModel.singleEventCity.collect { city ->
@@ -68,8 +68,8 @@ fun CitiesScreen(
                 )
                 DynamicLazyColumn((state.value as CitiesScreenUiState.Success).data.citiesFiltered,
                     { cityClicked -> viewModel.cityClicked(cityClicked) },
-                    { id, clicked -> viewModel.favoriteClicked(id, clicked) }
-
+                    { id, clicked -> viewModel.favoriteClicked(id, clicked) },
+                    navigateToInfo
                 )
                 /*currentCity?.let{ city ->
                     navigateToMap(city)
@@ -81,8 +81,8 @@ fun CitiesScreen(
             DisplayError((state.value as CitiesScreenUiState.Error).errorModel)
         }
 
-        is Init -> Log.e("-Sebas-", "+++++++  init  +++++++ no hacer nada")
-        is CitiesScreenUiState.Loading -> Log.e("-Sebas-", "+++++++  loading  +++++++ esperar")
+        is Init -> Log.e("-Sebas-", "init")
+        is CitiesScreenUiState.Loading -> Log.e("-Sebas-", "mostrar mensaje de loading")
     }
 }
 
@@ -90,14 +90,16 @@ fun CitiesScreen(
 fun DynamicLazyColumn(
     items: List<City>,
     onCityClick: (city: City) -> Unit,
-    onItemFavoriteClicked: (id: Int, clicked: Boolean) -> Unit
+    onItemFavoriteClicked: (id: Int, clicked: Boolean) -> Unit,
+    onInfoClicked: () -> Unit
 ) {
     LazyColumn {
         items(items.size) { cityIndex ->
             CityItem(
                 items[cityIndex],
                 onCityClick = onCityClick,
-                onItemFavoriteClicked = onItemFavoriteClicked
+                onItemFavoriteClicked = onItemFavoriteClicked,
+                onInfoClicked = onInfoClicked
             )
         }
     }
@@ -173,6 +175,6 @@ fun CitiesScreenPreview() {
         )
     )
     SearchView(viewModel = hiltViewModel(), filter = "au", false)
-    DynamicLazyColumn(cities, {}, { id, clicked -> })
+    DynamicLazyColumn(cities, {}, { id, clicked -> }, {})
 }
 

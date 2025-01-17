@@ -46,7 +46,6 @@ fun MapScreen(
                 back,
                 isLandscape)
     }
-    Log.e("Sebas", "--------------init del cityScreen... viewModel: $viewModel")
 
     LaunchedEffect(Unit) {
         viewModel.singleEventCity.collect { city ->
@@ -56,8 +55,6 @@ fun MapScreen(
             //TODO aca llamar a mostrar la ciudad en el mapa
         }
     }
-
-    Log.e("Sebas", "--------------init del map... viewModel: $viewModel")
 
 }
 
