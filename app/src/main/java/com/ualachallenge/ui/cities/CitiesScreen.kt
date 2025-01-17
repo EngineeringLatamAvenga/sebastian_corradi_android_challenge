@@ -3,8 +3,10 @@ package com.ualachallenge.ui.cities
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,10 +26,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ualachallenge.data.City
 import com.ualachallenge.data.Coord
@@ -55,9 +60,6 @@ fun CitiesScreen(
         }
     }
 
-    /*LaunchedEffect(Unit) {
-        viewModel.citiesRequested()
-    }*/
     when (state.value) {
         is CitiesScreenUiState.Success -> {
             Column(modifier = modifier) {
@@ -81,11 +83,20 @@ fun CitiesScreen(
             DisplayError((state.value as CitiesScreenUiState.Error).errorModel)
         }
 
-        is Init -> Log.e("-Sebas-", "init")
-        is CitiesScreenUiState.Loading -> Log.e("-Sebas-", "mostrar mensaje de loading")
+        is Init -> Loading()
+        is CitiesScreenUiState.Loading -> Loading()
     }
 }
 
+@Composable
+fun Loading(){
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center // Aligns the content to the center
+    ) {
+        Text(text = "Please wait, cities loading", fontSize = 24.sp)
+    }
+}
 @Composable
 fun DynamicLazyColumn(
     items: List<City>,
@@ -154,9 +165,16 @@ fun SearchView(
 
 @Composable
 fun DisplayError(errorModel: ResponseErrorModel) {
-    val context = LocalContext.current
-    val title = errorModel.errorCode
-    Toast.makeText(context, "This is a toast message", Toast.LENGTH_SHORT).show()
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center // Aligns the content to the center
+    ) {
+        Column {
+            Text(text = errorModel.title, fontSize = 24.sp)
+            Text(text = errorModel.message, fontSize = 20.sp)
+            Text(text = "Error code: ${errorModel.errorCode}", fontSize = 20.sp)
+        }
+    }
 
 }
 

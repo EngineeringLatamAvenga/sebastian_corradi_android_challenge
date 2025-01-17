@@ -72,7 +72,6 @@ fun MainScreen() {
                     MapScreen(
                         modifier = Modifier.fillMaxWidth(),
                         viewModel = hiltViewModel<CitiesScreenViewModel>(),
-                        City("Ar", "Palermo", 23, Coord(-58.6444535, -28.44455342))
                     ) {}
                 }
             }
@@ -91,9 +90,9 @@ fun MainScreen() {
                 city -> MapScreen(
                     modifier,
                     viewModel = hiltViewModel<CitiesScreenViewModel>(),
-                    city) {
-                        currentScreen = Screen.CityScreen
-                    }
+                ) {
+                    currentScreen = Screen.CityScreen
+                }
             }
             Screen.Info -> InfoScreen(){
                 currentScreen = Screen.CityScreen
