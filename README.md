@@ -1,6 +1,8 @@
 # Code Challenge - Sebastian Corradi
 SebastianCorradi@gmail.com
 
+Requerimientos disponibles en https://github.com/EngineeringLatamAvenga/sebastian_corradi_android_challenge/blob/main/Mobile%20Challenge%20-%20v0.5.pdf
+
 # Librerías utilizadas
 - Retrofit
 - Hilt
