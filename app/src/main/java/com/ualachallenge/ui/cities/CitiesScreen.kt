@@ -1,7 +1,5 @@
 package com.ualachallenge.ui.cities
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,7 +65,8 @@ fun CitiesScreen(
                     filter = (state.value as CitiesScreenUiState.Success).data.nameFilter,
                     favouritesChecked = (state.value as CitiesScreenUiState.Success).data.justFavouritesChecked,
                 )
-                DynamicLazyColumn((state.value as CitiesScreenUiState.Success).data.citiesFiltered,
+                DynamicLazyColumn(
+                    (state.value as CitiesScreenUiState.Success).data.citiesFiltered,
                     { cityClicked -> viewModel.cityClicked(cityClicked) },
                     { id, clicked -> viewModel.favoriteClicked(id, clicked) },
                     navigateToInfo
@@ -89,7 +87,7 @@ fun CitiesScreen(
 }
 
 @Composable
-fun Loading(){
+fun Loading() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center // Aligns the content to the center
@@ -97,6 +95,7 @@ fun Loading(){
         Text(text = "Please wait, cities loading", fontSize = 24.sp)
     }
 }
+
 @Composable
 fun DynamicLazyColumn(
     items: List<City>,
