@@ -41,7 +41,7 @@ fun CitiesScreen(
 ) {
     val state = viewModel.citiesScreenUiState.collectAsState()
     var currentCity by remember { mutableStateOf<City?>(null) }
-    currentCity?.let{ city ->
+    currentCity?.let { city ->
         navigateToMap(city)
     }
     Log.e("Sebas", "--------------init del cityScreen... viewModel: $viewModel")
@@ -58,7 +58,7 @@ fun CitiesScreen(
     /*LaunchedEffect(Unit) {
         viewModel.citiesRequested()
     }*/
-    when (state.value){
+    when (state.value) {
         is CitiesScreenUiState.Success -> {
             Column(modifier = modifier) {
                 SearchView(
@@ -67,8 +67,8 @@ fun CitiesScreen(
                     favouritesChecked = (state.value as CitiesScreenUiState.Success).data.justFavouritesChecked,
                 )
                 DynamicLazyColumn((state.value as CitiesScreenUiState.Success).data.citiesFiltered,
-                    {cityClicked -> viewModel.cityClicked(cityClicked)},
-                    {id, clicked -> viewModel.favoriteClicked(id, clicked)}
+                    { cityClicked -> viewModel.cityClicked(cityClicked) },
+                    { id, clicked -> viewModel.favoriteClicked(id, clicked) }
 
                 )
                 /*currentCity?.let{ city ->
@@ -76,21 +76,29 @@ fun CitiesScreen(
                 }*/
             }
         }
+
         is CitiesScreenUiState.Error -> {
             DisplayError((state.value as CitiesScreenUiState.Error).errorModel)
         }
-        is Init -> Log.e("-Sebas-","+++++++  init  +++++++ no hacer nada")
-        is CitiesScreenUiState.Loading -> Log.e("-Sebas-","+++++++  loading  +++++++ esperar")
+
+        is Init -> Log.e("-Sebas-", "+++++++  init  +++++++ no hacer nada")
+        is CitiesScreenUiState.Loading -> Log.e("-Sebas-", "+++++++  loading  +++++++ esperar")
     }
 }
 
 @Composable
-fun DynamicLazyColumn(items: List<City>,
-                      onCityClick: (city: City) -> Unit,
-                      onItemFavoriteClicked: (id: Int, clicked: Boolean) -> Unit) {
+fun DynamicLazyColumn(
+    items: List<City>,
+    onCityClick: (city: City) -> Unit,
+    onItemFavoriteClicked: (id: Int, clicked: Boolean) -> Unit
+) {
     LazyColumn {
         items(items.size) { cityIndex ->
-            CityItem(items[cityIndex], onCityClick = onCityClick, onItemFavoriteClicked = onItemFavoriteClicked)
+            CityItem(
+                items[cityIndex],
+                onCityClick = onCityClick,
+                onItemFavoriteClicked = onItemFavoriteClicked
+            )
         }
     }
 }
@@ -101,11 +109,13 @@ fun SearchView(
     filter: String,
     favouritesChecked: Boolean
 ) {
-    Row( modifier = Modifier
-        .wrapContentHeight()
-        .fillMaxWidth()
-        .padding(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)){
+    Row(
+        modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .padding(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
 
         TextField(
             modifier = Modifier
@@ -129,7 +139,7 @@ fun SearchView(
             modifier = Modifier
                 .padding(start = 2.dp, top = 8.dp)
                 .wrapContentSize()
-                 // Align to top-left corner
+            // Align to top-left corner
         ) {
             Icon(
                 Icons.Rounded.Close,
@@ -150,7 +160,7 @@ fun DisplayError(errorModel: ResponseErrorModel) {
 
 @Preview
 @Composable
-fun CitiesScreenPreview(){
+fun CitiesScreenPreview() {
     val cities = listOf(
         City(
             country = "AR", name = "Palermo", id = 330765, coord = Coord(33.652234, 76.555435)
@@ -163,6 +173,6 @@ fun CitiesScreenPreview(){
         )
     )
     SearchView(viewModel = hiltViewModel(), filter = "au", false)
-    DynamicLazyColumn(cities,{},{id, clicked ->})
+    DynamicLazyColumn(cities, {}, { id, clicked -> })
 }
 

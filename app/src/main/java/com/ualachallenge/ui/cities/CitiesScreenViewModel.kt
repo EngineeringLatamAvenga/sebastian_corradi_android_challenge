@@ -21,9 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CitiesScreenViewModel @Inject constructor(
-        var getCitiesUseCase: GetCitiesUseCase,
-        var filterCitiesUseCase: FilterCitiesUseCase) : ViewModel() {
-    private val _citiesScreenUiState = MutableStateFlow<CitiesScreenUiState>(CitiesScreenUiState.Init())
+    var getCitiesUseCase: GetCitiesUseCase,
+    var filterCitiesUseCase: FilterCitiesUseCase
+) : ViewModel() {
+    private val _citiesScreenUiState =
+        MutableStateFlow<CitiesScreenUiState>(CitiesScreenUiState.Init())
     val citiesScreenUiState: StateFlow<CitiesScreenUiState> get() = _citiesScreenUiState // Expose as an immutable flow
 
     private val _singleEventCity = Channel<City>(Channel.BUFFERED)
@@ -43,25 +45,29 @@ class CitiesScreenViewModel @Inject constructor(
     init {
         citiesRequested()
     }
-    fun cityClicked(city: City){
+
+    fun cityClicked(city: City) {
         CoroutineScope(Dispatchers.Main).launch {
             _singleEventCity.send(city)
         }
         _currentCityClicked.update { city }
 
     }
-    fun citiesRequested(){
+
+    fun citiesRequested() {
         CoroutineScope(Dispatchers.IO).launch {
             val citiesResponse = getCitiesUseCase()
             cities.clear()
             cities.addAll((citiesResponse as CitiesScreenUiState.Success).data.citiesFiltered)
-            _citiesScreenUiState.value = CitiesScreenUiState.Success(CitiesScreenState(cities , "", false))
+            _citiesScreenUiState.value =
+                CitiesScreenUiState.Success(CitiesScreenState(cities, "", false))
         }
     }
 
     fun filterChange(value: String) {
         Log.e("Sebas", "Filter changed to: $value")
-        val checked = ( _citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
+        val checked =
+            (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
         val newCitiesScreenUIState = filterCitiesUseCase.invoke(cities, value, checked)
         _citiesScreenUiState.value = newCitiesScreenUIState
     }
@@ -74,8 +80,10 @@ class CitiesScreenViewModel @Inject constructor(
             Log.e("Sebas", "Fav clicked, id: $id, chnged to: $clicked")
         }
         val filter = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.nameFilter
-        val justFavorites = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
-        val newCities = (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.citiesFiltered
+        val justFavorites =
+            (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.justFavouritesChecked
+        val newCities =
+            (_citiesScreenUiState.value as CitiesScreenUiState.Success).data.citiesFiltered
 
         val newValue = CitiesScreenUiState.Success(
             CitiesScreenState(

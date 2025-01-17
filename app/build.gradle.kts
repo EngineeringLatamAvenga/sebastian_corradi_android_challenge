@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.storage)
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.junit.ktx)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
