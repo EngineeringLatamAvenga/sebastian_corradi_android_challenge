@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -26,6 +27,7 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.ualachallenge.R
 import com.ualachallenge.data.City
 import com.ualachallenge.ui.cities.CitiesScreenViewModel
 
@@ -100,7 +102,7 @@ fun ShowMap(city: City,
                         back()
                     })
                 {
-                    Text(text = "volver")
+                    Text(text = stringResource(R.string.back))
                 }
 
             }

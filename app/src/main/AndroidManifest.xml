@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ualachallenge"
         tools:targetApi="31">
+        <uses-library android:name="android.test.runner" android:required="false"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDcoJLWqLSk-bPEVilTZw-Ekc8tZtlXLnw" />

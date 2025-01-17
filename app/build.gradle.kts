@@ -76,7 +76,6 @@ dependencies {
     //maps
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
-    //implementation ("com.google.maps.android:maps-compose:4.4.1")
 
     //ROOM
     implementation(libs.androidx.room.runtime)
@@ -90,9 +89,13 @@ dependencies {
     debugImplementation(libs.ui.test.manifest) // For manifest testing
     androidTestImplementation(libs.ui.test.junit4) // For Compose test rules
 
+    androidTestImplementation(libs.androidx.ui.test.junit4.vlatestversion)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    //androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

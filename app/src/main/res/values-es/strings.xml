@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ualachallenge</string>
+
+    <!-- Error Mesages -->
+    <string name="no_cities_available">No hay ciudades disponibles</string>
+    <string name="error_on_server_call" translatable="false">Error en llamada al servidor</string>
+    <string name="error_timeout" translatable="false">Error de timeout</string>
+
+    <!-- Buttons -->
+    <string name="back" translatable="false">Volver</string>
+</resources>

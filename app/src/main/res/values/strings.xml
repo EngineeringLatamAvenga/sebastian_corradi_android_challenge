@@ -3,6 +3,9 @@
 
     <!-- Error Mesages -->
     <string name="no_cities_available">There are no cities available</string>
-    <string name="error_on_server_call">Error on server call</string>
-    <string name="error_timeout">Timeout error</string>
+    <string name="error_on_server_call" translatable="false">Error on server call</string>
+    <string name="error_timeout" translatable="false">Timeout error</string>
+
+    <!-- Buttons -->
+    <string name="back" translatable="false">Back</string>
 </resources>
