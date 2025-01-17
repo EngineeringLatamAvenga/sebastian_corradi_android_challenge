@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.storage)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.ui.test.junit4.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -85,6 +86,9 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
 
+    // Compose testing
+    debugImplementation(libs.ui.test.manifest) // For manifest testing
+    androidTestImplementation(libs.ui.test.junit4) // For Compose test rules
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

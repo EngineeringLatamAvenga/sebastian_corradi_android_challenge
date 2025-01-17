@@ -19,6 +19,9 @@ roomRuntime = "2.6.1"
 storage = "1.5.0"
 roomCommon = "2.6.1"
 junitKtx = "1.2.1"
+uiTestJunit4 = "1.7.6"
+uiTestManifest = "1.7.6"
+uiTestJunit4Android = "1.7.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +53,9 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
