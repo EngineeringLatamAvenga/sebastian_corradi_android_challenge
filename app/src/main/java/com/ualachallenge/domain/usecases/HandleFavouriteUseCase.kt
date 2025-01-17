@@ -8,10 +8,6 @@ class HandleFavouriteUseCase @Inject constructor(
     protected val citiesRepository: CitiesRepository,
 ) {
     open suspend operator fun invoke(city: City) {
-        if (city.favourite) {
-            citiesRepository.saveFavourite(city)
-        } else {
-            citiesRepository.deleteFavourite(city)
-        }
+        citiesRepository.saveFavourite(city)
     }
 }

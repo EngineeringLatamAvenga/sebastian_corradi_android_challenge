@@ -8,13 +8,11 @@ class Converters {
     @TypeConverter
     fun fromCoordEntityToString(coord: CoordEntity): String {
         val jsonString = "{\"lat\":\"${coord.lat}\",\"lon\":\"${coord.lon}\" }"
-        Log.e("Sebas", "jsonString vale: $jsonString")
         return jsonString
     }
 
     @TypeConverter
     fun stringToCoordEntity(json: String): CoordEntity {
-        Log.e("Sebas", "json vale: $json")
         val jsonObj = JSONObject(json)
 
         return CoordEntity(

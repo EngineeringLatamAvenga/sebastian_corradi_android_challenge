@@ -10,15 +10,14 @@ open class CitiesRepository(
     val remoteCitiesDataSource: RemoteCitiesDataSource
 ) {
     suspend fun getCities(): CitiesResponse {
-        val response = remoteCitiesDataSource.getCities()
-        val favourites = localCitiesDataSource.getFavourites()
-        for (city in favourites) {
-            val responseCity = response.cities.filter { it.id == city.id }.firstOrNull()
-            responseCity?.let {
-                it.favourite = city.favourite
-            }
+        val localCities = localCitiesDataSource.getCities()
+        if (localCities.cities.isNotEmpty()){
+            return localCities
+        } else {
+            val response = remoteCitiesDataSource.getCities()
+            localCitiesDataSource.saveAll(response.cities)
+            return response
         }
-        return response
     }
 
     suspend fun getFavourites(): List<City> {

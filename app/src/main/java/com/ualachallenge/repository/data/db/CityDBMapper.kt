@@ -16,7 +16,7 @@ class CityDBMapper {
     }
 
     @TypeConverter
-    fun cityToEntity(city: City): CityEntity {
+    fun fromCityToEntity(city: City): CityEntity {
         return CityEntity(
             name = city.name,
             country = city.country,
