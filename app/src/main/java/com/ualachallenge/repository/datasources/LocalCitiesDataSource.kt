@@ -1,5 +1,6 @@
 package com.ualachallenge.repository.datasources
 
+import android.util.Log
 import com.ualachallenge.data.City
 import com.ualachallenge.data.Coord
 import com.ualachallenge.domain.toCity
@@ -28,6 +29,7 @@ class LocalCitiesDataSource @Inject constructor(
 
     override suspend fun getFavourites(): List<City> {
         val citiesEntity = cityDao.getAll()
+        Log.e("Sebas", "cities: $citiesEntity")
         return citiesEntity.map { CityDBMapper().fromEntityToCity(it) }
     }
 

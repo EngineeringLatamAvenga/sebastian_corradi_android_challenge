@@ -10,7 +10,7 @@ class CityDBMapper {
             name = entity.name,
             country = entity.country,
             id = entity.id,
-            coord = Coord(0.0,0.0),
+            coord = entityToCoord(entity.coord),
             favourite = entity.favourite
         )
     }
@@ -21,8 +21,16 @@ class CityDBMapper {
             name = city.name,
             country = city.country,
             id = city.id,
-            coord = "",
+            coord = coordToEntity(city.coord),
             favourite = city.favourite
         )
+    }
+
+    fun coordToEntity(coord: Coord):CoordEntity{
+        return CoordEntity(lat = coord.lat, lon = coord.lon)
+    }
+
+    fun entityToCoord(coordEntity: CoordEntity): Coord {
+        return Coord(lat = coordEntity.lat, lon = coordEntity.lon)
     }
 }

@@ -8,7 +8,7 @@ class CityEntity (
     val country:String,
     val name: String,
     @PrimaryKey val id: Int,
-    val coord:String,
+    val coord:CoordEntity,
     var favourite: Boolean = false
     ) {
     }
